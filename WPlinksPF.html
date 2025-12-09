@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROBabLE Futures - Work Package Links</title>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState } = React;
+
+        const DependencyNetwork = () => {
+          const [hoveredConnection, setHoveredConnection] = useState(null);
+          const [selectedWP, setSelectedWP] = useState(null);
+          const [hoveredWP, setHoveredWP] = useState(null);
+
+          const workPackages = {
+            WP1: {
+              title: "Mapping the Ecosystem",
+              lead: "Michele and Kyri",
+              collaborators: "Temi, Lizzie, Evdoxia, Yifeng advising",
+              x: 150,
+              y: 50,
+              color: "#475569",
+              outputs: "Comprehensive typology of probabilistic AI in law enforcement, combining criminal justice and legal elements with technical and data categorisation",
+              description: "Scope, analyse and map the probabilistic AI ecosystem in law enforcement, paying particular attention to data quality, variability, and provenance; pre-trained and re-trained models; the chaining of systems; and interactions between decision-makers and systems in legally-bound contexts.",
+              researchQuestions: [
+                "What probabilistic AI tools are being deployed, piloted or trialled in the main stages of the law enforcement process?",
+                "How are each of the above AI tools categorised in relation to the following? a) technical method and mode b) training data and testing c) internal parameter settings d) role in the law enforcement decision and legal framework e) comprehension of measures such as precision and uncertainty f) model chaining and connection with other systems?"
+              ]
+            },
+            WP2a: {
+              title: "Lessons from History: Governance and Technology",
+              lead: "Carole and Michele",
+              collaborators: "Kyle, Adrian, Gita, Jennifer, Temi, Angela",
+              x: 50,
+              y: 200,
+              color: "#64748b",
+              description: "Implement lessons from prior law enforcement-relevant probabilistic technologies such as fingerprints and DNA profiling, polygraphs and facial recognition, including how technical uncertainties and evaluations, legal challenges, and governance were/are addressed.",
+              researchQuestions: [
+                "Using a shortlist of past probabilistic technologies, what legal, regulatory/governance, technical and interpretability issues can be identified from these past case-studies?",
+                "What regulatory/governance and technical methodologies could have mitigated the identified issues for each case-study?"
+              ]
+            },
+            WP2b: {
+              title: "Lessons from History: Stories by People",
+              lead: "Gita and Marion",
+              collaborators: "Michael, Kyle, Jennifer, Katherine (lead STT), Claire",
+              x: 50,
+              y: 320,
+              color: "#5f7d8a",
+              description: "Use storytelling as a research method to explore the lived experiences of diverse stakeholders affected by law enforcement AI.",
+              researchQuestions: [
+                "What can storytelling as a research method reveal about lived experiences of stakeholders and contested truths in relation to law enforcement AI?"
+              ],
+              focusAreas: [
+                { area: "Women", lead: "Jennifer" },
+                { area: "Disability", lead: "Michael" },
+                { area: "Race and Equality", lead: "Katherine" }
+              ]
+            },
+            WP3: {
+              title: "Law Enforcement AI of the Future",
+              lead: "Muffy and Lizzie",
+              collaborators: "Kyri, Michele, Yifeng, Claire, Evdoxia, Temi, Mackenzie (Adrian)",
+              x: 200,
+              y: 440,
+              color: "#7c5d6f",
+              description: "Anticipate future law enforcement technologies, analysing and evaluating emerging technologies such as Large Language Models, surveillance from space, emerging biometrics, and contested technologies such as gait, emotion, age and gunshot recognition, so that our framework can be future-proofed.",
+              researchQuestions: [
+                "What future and emerging technologies are likely to impact and influence law enforcement?",
+                "How are each of the above future AI tools categorised in relation to the following? a) technical method and mode b) training data and testing c) internal parameter settings d) role in the law enforcement decision and legal framework e) comprehension of measures such as precision and uncertainty f) model chaining and connection with other systems?",
+                "What testing protocols, model techniques and guidelines are required to ensure that future AI tools in law enforcement are responsible?"
+              ]
+            },
+            WP4a: {
+              title: "Experimental Oversight",
+              lead: "Claire and Marion",
+              collaborators: "Jennifer, Michael, Gita, Adrian, Evdoxia",
+              x: 650,
+              y: 100,
+              color: "#8b6f5e",
+              description: "Experiment with ways of assuring, scrutinising, challenging and overseeing AI-assisted decision-making in law enforcement, and evaluate the most effective visualisations of technical information, accuracy, relevancy, errors/failures and uncertainties.",
+              researchQuestions: [
+                "What is the most effective model for participatory oversight of AI in law enforcement?",
+                "What lessons can be learned from the establishment and operation of the experimental oversight body?",
+                "Which methods of scrutiny (such as assurance cases, model cards) were the most effective?"
+              ]
+            },
+            WP4b: {
+              title: "Jury Deliberation & Trial Process",
+              lead: "Kyle and Lizzie",
+              collaborators: "Angela, Kath, Michele, Marion, Kyri",
+              x: 650,
+              y: 220,
+              color: "#927161",
+              description: "Develop guidance document (policy and practice) on navigating AI within jury trials, with emphasis on the relevance and reliability of the evidence.",
+              researchQuestions: [
+                "What issues relating to the use of probabilistic AI do the main stakeholders in the jury trial exercise wish to explore? (prosecution and defence counsel, police, judiciary, Home Office, MoJ, experimental advisory body)",
+                "Which methods of visualisation, design and communication are the most effective for interaction between experts/expert systems and decision-makers?",
+                "What standards, guidance, protocols and governance will be needed to ensure reliability and relevance of AI-enabled evidence in the future?"
+              ]
+            },
+            WP5: {
+              title: "Comparing Law Enforcement Systems",
+              lead: "Kyri and Adrian",
+              collaborators: "Angela to take lead, Temi, Carole, Lizzie, Yifeng",
+              x: 400,
+              y: 50,
+              color: "#6b7c6e",
+              description: "Investigate and analyse the significance of law enforcement bases, legal frameworks, principles and contexts for technical, operational, legal, ethical and societal impacts, and determine the implications for the content and deployment of our framework.",
+              researchQuestions: [
+                "What similarities and differences can be identified between law enforcement bases, legal frameworks and contexts across jurisdictions and how do these influence the understandings and development of responsible AI?"
+              ]
+            },
+            WP6: {
+              title: "Framework, Lexicon and Checklist",
+              lead: "Marion, Michele & Claire",
+              collaborators: "Carole, Muffy and Gita, all RFs",
+              x: 380,
+              y: 260,
+              color: "#5a7a8c",
+              description: "Create, validate and communicate a holistic, rights-based framework(s) accounting for technical, operational, legal, ethical and societal implications of Probabilistic AI systems in law enforcement, with a lexicon for 'responsible' AI across the criminal justice landscape, and a checklist for responsible AI deployment.",
+              researchQuestions: [
+                "What should be included in a framework to support responsible probabilistic AI in law enforcement?"
+              ]
+            },
+            WP7: {
+              title: "Communicate and Influence",
+              lead: "Carole",
+              collaborators: "Mackenzie et al",
+              x: 570,
+              y: 440,
+              color: "#6b6b83",
+              description: "**Note:**\nWP7 may look like an outlier, but every output, conference presentation, talk, consultation response, or policy brief from ALL work packages flows into WP7 for communication and dissemination throughout the project lifecycle.\n\n**Objectives:**\nWork with RAI UK to consider the ways in which our framework is applicable to other domains with a complex ecosystem of different types of probabilistic AI (e.g. healthcare).",
+              researchQuestions: [
+                "How can project research impact and influence our partners, stakeholders and the wider law enforcement ecosystem?",
+                "How is the project framework applicable to other domains and research contexts?"
+              ]
+            }
+          };
+
+          const connections = [
+            {
+              from: "WP1",
+              to: "WP2a",
+              description: "WP1 provides foundational typology and mapping of AI tools in law enforcement. This feeds into WP2a's analysis of governance and technology frameworks.",
+              type: "Typology & Mapping Data"
+            },
+            {
+              from: "WP1",
+              to: "WP2b",
+              description: "Contacts and learning from WP1 may be discussed in WP2b storytelling sessions",
+              type: "Learning & Contacts"
+            },
+            {
+              from: "WP1",
+              to: "WP3",
+              description: "WP3 investigates aspects identified in WP1 including: testing protocols, impact of pre-training, user-controlled parameters, and system chaining. WP1's ecosystem mapping directly informs WP3's future scenarios.",
+              type: "Testing Protocols, Pre-training Data, Chaining Analysis"
+            },
+            {
+              from: "WP1",
+              to: "WP4a",
+              description: "Specific AI tools identified in WP1 - Live Facial Recognition (LFR), Anathem Digital Assistant (ADA), and Predicting Knife Crime - feed into case studies for the WP4a oversight committee. These case studies inform three key questions: (1) How do we define 'responsible use' of LFR in democratic policing? (2) What independent oversight (e.g., ethics boards, citizen panels) should be required? (3) What recommendations should guide future policy on AI-driven surveillance tools?",
+              type: "Case Study Tools: LFR, ADA, Knife Crime Prediction"
+            },
+            {
+              from: "WP1",
+              to: "WP4b",
+              description: "WP1's typology and categorisation of AI systems feeds into WP4b's exploration of jury deliberation and trial processes.",
+              type: "AI System Categorisation"
+            },
+            {
+              from: "WP2a",
+              to: "WP2b",
+              description: "WP2a's governance and technology lessons provide the foundation for WP2b's narrative and people-centered approach to historical analysis.",
+              type: "Governance Frameworks & Historical Lessons"
+            },
+            {
+              from: "WP2a",
+              to: "WP3",
+              description: "Findings from WP2a on governance and technology inform WP3's quantification of visualisation methods' effects on model interpretation and decision-making.",
+              type: "Historical Governance Findings"
+            },
+            {
+              from: "WP2b",
+              to: "WP3",
+              description: "WP2b's people-centered historical stories inform WP3's approach to comprehension, predictability, and decision-making rationality in policing contexts.",
+              type: "Human-Centered Insights"
+            },
+            {
+              from: "WP2a",
+              to: "WP4b",
+              description: "WP2a's governance lessons feed into WP4b's exploration of trial processes and jury deliberation.",
+              type: "Governance Lessons"
+            },
+            {
+              from: "WP2b",
+              to: "WP4b",
+              description: "WP2b's narrative approaches inform WP4b's methods of visualisation, design and communication for jury contexts.",
+              type: "Narrative & Communication Methods"
+            },
+            {
+              from: "WP3",
+              to: "WP4b",
+              description: "WP3 provides interface prototypes, data visualisation techniques, and explainability methods that directly feed into WP4b's jury deliberation research.",
+              type: "Interface Prototypes, Visualisation & Explainability Techniques"
+            },
+            {
+              from: "WP3",
+              to: "WP4a",
+              description: "Case studies and learning feed into case studies for WP4a (where applicable)",
+              type: "Case Studies & Learning"
+            },
+            {
+              from: "WP4a",
+              to: "WP4b",
+              description: "WP4a's oversight body provides advice and ethical review frameworks that inform WP4b's jury research approach.",
+              type: "Oversight Advice & Ethical Review"
+            },
+            {
+              from: "WP1",
+              to: "WP6",
+              description: "WP1's comprehensive mapping and typology feeds into the development of the framework and lexicon.",
+              type: "Typology Foundation"
+            },
+            {
+              from: "WP2a",
+              to: "WP6",
+              description: "Historical governance lessons contribute to framework development.",
+              type: "Governance Concepts"
+            },
+            {
+              from: "WP2b",
+              to: "WP6",
+              description: "People-centered narratives inform the lexicon's accessibility.",
+              type: "Communication Framework"
+            },
+            {
+              from: "WP3",
+              to: "WP6",
+              description: "Future scenarios and visualisation findings shape the framework.",
+              type: "Future Scenarios & Methods"
+            },
+            {
+              from: "WP4a",
+              to: "WP6",
+              description: "Oversight mechanisms contribute to the responsible AI framework.",
+              type: "Oversight Framework"
+            },
+            {
+              from: "WP4b",
+              to: "WP6",
+              description: "Jury research findings inform legal framework components.",
+              type: "Legal Process Insights"
+            },
+            {
+              from: "WP5",
+              to: "WP6",
+              description: "Comparative international analysis enriches the framework.",
+              type: "International Comparison"
+            },
+            {
+              from: "WP5",
+              to: "WP4b",
+              description: "Birmingham City University and the University of New South Wales collaborate with mock trial team on mock trial studies, bringing comparative international perspectives to jury deliberation research.",
+              type: "International Mock Trial Collaboration"
+            },
+            {
+              from: "WP1",
+              to: "WP7",
+              description: "All outputs, presentations, and deliverables from WP1 flow into WP7 for communication and dissemination.",
+              type: "Outputs & Dissemination"
+            },
+            {
+              from: "WP2a",
+              to: "WP7",
+              description: "All outputs, presentations, and deliverables from WP2a flow into WP7 for communication and dissemination.",
+              type: "Outputs & Dissemination"
+            },
+            {
+              from: "WP2b",
+              to: "WP7",
+              description: "All outputs, presentations, and deliverables from WP2b flow into WP7 for communication and dissemination.",
+              type: "Outputs & Dissemination"
+            },
+            {
+              from: "WP3",
+              to: "WP7",
+              description: "All outputs, presentations, and deliverables from WP3 flow into WP7 for communication and dissemination.",
+              type: "Outputs & Dissemination"
+            },
+            {
+              from: "WP4a",
+              to: "WP7",
+              description: "All outputs, presentations, and deliverables from WP4a flow into WP7 for communication and dissemination.",
+              type: "Outputs & Dissemination"
+            },
+            {
+              from: "WP4b",
+              to: "WP7",
+              description: "All outputs, presentations, and deliverables from WP4b flow into WP7 for communication and dissemination.",
+              type: "Outputs & Dissemination"
+            },
+            {
+              from: "WP5",
+              to: "WP7",
+              description: "All outputs, presentations, and deliverables from WP5 flow into WP7 for communication and dissemination.",
+              type: "Outputs & Dissemination"
+            },
+            {
+              from: "WP6",
+              to: "WP7",
+              description: "The framework, lexicon, and checklist from WP6 are communicated and disseminated through WP7.",
+              type: "Framework Dissemination"
+            }
+          ];
+
+          const InfoIcon = () => (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+          );
+
+          const renderFormattedText = (text) => {
+            const parts = text.split(/(\*\*.*?\*\*)/g);
+            return parts.map((part, idx) => {
+              if (part.startsWith('**') && part.endsWith('**')) {
+                return React.createElement('div', { key: idx, className: 'font-semibold text-slate-900 mt-3 mb-1 text-xs' }, 
+                  part.slice(2, -2)
+                );
+              }
+              return React.createElement('span', { key: idx }, part);
+            });
+          };
+
+          const renderDescription = (description) => {
+            const sections = description.split('\n\n');
+            return sections.map((section, idx) => {
+              const hasHeading = section.includes('**');
+              if (hasHeading) {
+                return React.createElement('div', { key: idx }, renderFormattedText(section));
+              }
+              return React.createElement('p', { key: idx, className: idx > 0 ? 'mt-2' : '' }, section);
+            });
+          };
+
+          return (
+            <div className="w-full h-screen bg-gray-50 p-6 pb-8">
+              <div className="bg-white rounded-lg shadow-lg p-6 h-full flex flex-col">
+                <div className="mb-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="text-slate-700 font-bold text-lg">PROBabLE Futures</div>
+                        <div className="text-slate-400 text-sm">|</div>
+                        <div className="text-slate-600 text-sm font-medium">RAI UK Keystone Project</div>
+                      </div>
+                      <h1 className="text-2xl font-bold text-slate-800 mb-2">
+                        Work Package Links
+                      </h1>
+                      <p className="text-sm text-slate-600">
+                        Hover over arrows to see what flows between work packages. Click work packages for details.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex-1 flex gap-4">
+                  <div className="flex-1 relative">
+                    <svg viewBox="0 0 900 550" className="w-full h-full">
+                      <defs>
+                        <marker
+                          id="arrow"
+                          viewBox="0 0 10 10"
+                          refX="10"
+                          refY="5"
+                          markerWidth="6"
+                          markerHeight="6"
+                          orient="auto-start-reverse"
+                        >
+                          <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8" />
+                        </marker>
+                        <marker
+                          id="arrow-hover"
+                          viewBox="0 0 10 10"
+                          refX="10"
+                          refY="5"
+                          markerWidth="8"
+                          markerHeight="8"
+                          orient="auto-start-reverse"
+                        >
+                          <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+                        </marker>
+                        <marker
+                          id="arrow-watermark"
+                          viewBox="0 0 10 10"
+                          refX="10"
+                          refY="5"
+                          markerWidth="5"
+                          markerHeight="5"
+                          orient="auto-start-reverse"
+                        >
+                          <path d="M 0 0 L 10 5 L 0 10 z" fill="#cbd5e1" />
+                        </marker>
+                      </defs>
+
+                      {connections.map((conn, idx) => {
+                        const from = workPackages[conn.from];
+                        const to = workPackages[conn.to];
+                        const isHovered = hoveredConnection === idx;
+                        const isWP7Connection = conn.to === 'WP7';
+                        
+                        const fromX = from.x + 90;
+                        const fromY = from.y + 40;
+                        const toX = to.x + 90;
+                        const toY = to.y + 40;
+                        
+                        const dx = toX - fromX;
+                        const dy = toY - fromY;
+                        const length = Math.sqrt(dx * dx + dy * dy);
+                        const angle = Math.atan2(dy, dx);
+                        
+                        const boxWidth = 180;
+                        const boxHeight = 80;
+                        
+                        const absCos = Math.abs(Math.cos(angle));
+                        const absSin = Math.abs(Math.sin(angle));
+                        
+                        let offsetDistance;
+                        if (boxHeight * absCos < boxWidth * absSin) {
+                          offsetDistance = (boxHeight / 2) / absSin;
+                        } else {
+                          offsetDistance = (boxWidth / 2) / absCos;
+                        }
+                        
+                        const startRatio = offsetDistance / length;
+                        const startX = fromX + dx * startRatio;
+                        const startY = fromY + dy * startRatio;
+                        
+                        const endRatio = (length - offsetDistance) / length;
+                        const endX = fromX + dx * endRatio;
+                        const endY = fromY + dy * endRatio;
+                        
+                        return React.createElement('line', {
+                          key: idx,
+                          x1: startX,
+                          y1: startY,
+                          x2: endX,
+                          y2: endY,
+                          stroke: isHovered ? "#64748b" : (isWP7Connection ? "#cbd5e1" : "#94a3b8"),
+                          strokeWidth: isHovered ? 3 : (isWP7Connection ? 1.5 : 2),
+                          markerEnd: isHovered ? "url(#arrow-hover)" : (isWP7Connection ? "url(#arrow-watermark)" : "url(#arrow)"),
+                          opacity: isWP7Connection && !isHovered ? 0.4 : 1,
+                          style: { cursor: 'pointer' },
+                          onMouseEnter: () => setHoveredConnection(idx),
+                          onMouseLeave: () => setHoveredConnection(null)
+                        });
+                      })}
+
+                      {Object.entries(workPackages).map(([id, wp]) => {
+                        const words = wp.title.split(' ');
+                        let line1 = '', line2 = '';
+                        let currentLine = '';
+                        
+                        words.forEach(word => {
+                          if ((currentLine + ' ' + word).length <= 25) {
+                            currentLine = currentLine ? currentLine + ' ' + word : word;
+                          } else {
+                            if (!line1) {
+                              line1 = currentLine;
+                              currentLine = word;
+                            } else {
+                              line2 = currentLine;
+                              currentLine = word;
+                            }
+                          }
+                        });
+                        
+                        if (!line1) line1 = currentLine;
+                        else if (!line2) line2 = currentLine;
+
+                        return React.createElement('g', {
+                          key: id,
+                          style: { cursor: 'pointer' },
+                          onClick: () => setSelectedWP(id),
+                          onMouseEnter: () => setHoveredWP(id),
+                          onMouseLeave: () => setHoveredWP(null)
+                        },
+                          React.createElement('rect', {
+                            x: wp.x,
+                            y: wp.y,
+                            width: 180,
+                            height: 80,
+                            rx: 8,
+                            fill: wp.color,
+                            stroke: selectedWP === id ? "#1e293b" : "none",
+                            strokeWidth: selectedWP === id ? 3 : 0,
+                            opacity: 0.95
+                          }),
+                          React.createElement('text', {
+                            x: wp.x + 90,
+                            y: wp.y + 28,
+                            textAnchor: "middle",
+                            fill: "white",
+                            fontSize: 14,
+                            fontWeight: "bold"
+                          }, id),
+                          line2 ? React.createElement('g', {},
+                            React.createElement('text', {
+                              x: wp.x + 90,
+                              y: wp.y + 48,
+                              textAnchor: "middle",
+                              fill: "white",
+                              fontSize: 10
+                            }, line1),
+                            React.createElement('text', {
+                              x: wp.x + 90,
+                              y: wp.y + 61,
+                              textAnchor: "middle",
+                              fill: "white",
+                              fontSize: 10
+                            }, line2)
+                          ) : React.createElement('text', {
+                            x: wp.x + 90,
+                            y: wp.y + 52,
+                            textAnchor: "middle",
+                            fill: "white",
+                            fontSize: 11
+                          }, line1)
+                        );
+                      })}
+                    </svg>
+                  </div>
+
+                  <div className="w-96 bg-gray-50 rounded-lg p-4 overflow-y-auto">
+                    {hoveredConnection !== null && (
+                      <div className="bg-white rounded-lg p-4 shadow-md">
+                        <div className="flex items-start gap-2 mb-3">
+                          <div className="text-slate-600 flex-shrink-0 mt-0.5">
+                            <InfoIcon />
+                          </div>
+                          <h3 className="font-bold text-slate-800">
+                            {connections[hoveredConnection].from} → {connections[hoveredConnection].to}
+                          </h3>
+                        </div>
+                        <div className="mb-3">
+                          <span className="inline-block bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-1 rounded">
+                            {connections[hoveredConnection].type}
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-700 leading-relaxed">
+                          {connections[hoveredConnection].description}
+                        </p>
+                      </div>
+                    )}
+
+                    {hoveredWP && !hoveredConnection && !selectedWP && (
+                      <div className="bg-white rounded-lg p-4 shadow-md">
+                        <div className="flex items-start gap-2 mb-3">
+                          <div className="text-slate-600 flex-shrink-0 mt-0.5">
+                            <InfoIcon />
+                          </div>
+                          <h3 className="font-bold text-slate-800">
+                            {hoveredWP}: {workPackages[hoveredWP].title}
+                          </h3>
+                        </div>
+                        <p className="text-sm text-slate-600 mb-2">
+                          <span className="font-semibold">Lead:</span> {workPackages[hoveredWP].lead}
+                        </p>
+                        {workPackages[hoveredWP].collaborators && (
+                          <p className="text-sm text-slate-600 mb-3">
+                            <span className="font-semibold">Collaborators:</span> {workPackages[hoveredWP].collaborators}
+                          </p>
+                        )}
+                        {workPackages[hoveredWP].description && (
+                          <div className="text-sm text-slate-700 leading-relaxed">
+                            {renderDescription(workPackages[hoveredWP].description)}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {selectedWP && !hoveredConnection && (
+                      <div className="bg-white rounded-lg p-4 shadow-md mt-4">
+                        <h3 className="font-bold text-lg mb-2" style={{ color: workPackages[selectedWP].color }}>
+                          {selectedWP}: {workPackages[selectedWP].title}
+                        </h3>
+                        <p className="text-sm text-slate-600 mb-1">
+                          <span className="font-semibold">Lead:</span> {workPackages[selectedWP].lead}
+                        </p>
+                        {workPackages[selectedWP].collaborators && (
+                          <p className="text-sm text-slate-600 mb-3">
+                            <span className="font-semibold">Collaborators:</span> {workPackages[selectedWP].collaborators}
+                          </p>
+                        )}
+                        
+                        {selectedWP === 'WP2b' ? (
+                          <div>
+                            <div className="mt-3">
+                              <p className="text-xs font-semibold text-slate-700 mb-2">Approach:</p>
+                              <p className="text-sm text-slate-700 leading-relaxed mb-3">
+                                Use storytelling as a research method to explore lived experiences of diverse stakeholders affected by law enforcement AI.
+                              </p>
+                            </div>
+                            
+                            <div className="mt-3">
+                              <p className="text-xs font-semibold text-slate-700 mb-2">Three Focus Areas:</p>
+                              <div className="space-y-2">
+                                <div className="bg-slate-50 p-2 rounded border-l-4 border-slate-400">
+                                  <p className="text-sm font-semibold text-slate-900">Women</p>
+                                  <p className="text-xs text-slate-700">Lead: Jennifer</p>
+                                </div>
+                                <div className="bg-slate-50 p-2 rounded border-l-4 border-slate-400">
+                                  <p className="text-sm font-semibold text-slate-900">Disability</p>
+                                  <p className="text-xs text-slate-700">Lead: Michael</p>
+                                </div>
+                                <div className="bg-slate-50 p-2 rounded border-l-4 border-slate-400">
+                                  <p className="text-sm font-semibold text-slate-900">Race and Equality</p>
+                                  <p className="text-xs text-slate-700">Lead: Katherine</p>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {workPackages[selectedWP].researchQuestions && (
+                              <div className="mt-3 bg-slate-50 p-3 rounded">
+                                <p className="text-xs font-semibold text-slate-900 mb-2">Research Question:</p>
+                                <p className="text-sm text-slate-800 leading-relaxed italic">
+                                  {workPackages[selectedWP].researchQuestions[0]}
+                                </p>
+                              </div>
+                            )}
+                            
+                            <div className="mt-3">
+                              <p className="text-xs font-semibold text-slate-700 mb-1">Key Output:</p>
+                              <p className="text-sm text-slate-700 leading-relaxed">
+                                Worked examples that give meaning, context and force to the framework, testing its robustness and feeding into guidance and training for law enforcement practitioners.
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div>
+                            {workPackages[selectedWP].description && (
+                              <div className="mt-3">
+                                <div className="text-sm text-slate-700 leading-relaxed">
+                                  {renderDescription(workPackages[selectedWP].description)}
+                                </div>
+                              </div>
+                            )}
+                            {workPackages[selectedWP].researchQuestions && (
+                              <div className="mt-3 bg-slate-50 p-3 rounded">
+                                <p className="text-xs font-semibold text-slate-900 mb-2">Research Questions:</p>
+                                {workPackages[selectedWP].researchQuestions.length === 1 ? (
+                                  <p className="text-sm text-slate-800 leading-relaxed italic">
+                                    {workPackages[selectedWP].researchQuestions[0]}
+                                  </p>
+                                ) : (
+                                  <ul className="space-y-2">
+                                    {workPackages[selectedWP].researchQuestions.map((q, idx) => (
+                                      <li key={idx} className="text-sm text-slate-800 leading-relaxed italic flex">
+                                        <span className="mr-2 font-semibold">{idx + 1}.</span>
+                                        <span>{q}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </div>
+                            )}
+                            {workPackages[selectedWP].outputs && (
+                              <div className="mt-3">
+                                <p className="text-xs font-semibold text-slate-700 mb-1">Key Output:</p>
+                                <p className="text-sm text-slate-700 leading-relaxed">
+                                  {workPackages[selectedWP].outputs}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {!hoveredConnection && !selectedWP && !hoveredWP && (
+                      <div className="text-center text-slate-500 mt-8">
+                        <div className="w-12 h-12 mx-auto mb-3 opacity-50 flex items-center justify-center">
+                          <InfoIcon />
+                        </div>
+                        <p className="text-sm">
+                          Hover over connection lines or click work packages to see dependency details
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-6 mb-4 border-t border-slate-200">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-sm text-slate-700 mb-2">Key Insights:</h4>
+                      <ul className="text-xs text-slate-600 space-y-1">
+                        <li>• WP1 is foundational - feeds into WP2a, WP3, and WP4b with typology and mapping data</li>
+                        <li>• WP3 draws from both WP1 (technical aspects) and WP2 (governance findings)</li>
+                        <li>• WP6 synthesizes ALL work packages to create the framework and lexicon</li>
+                        <li>• <strong>WP7 is the communication hub</strong> - ALL work packages feed their outputs, presentations, and deliverables into WP7 for dissemination throughout the project lifecycle</li>
+                      </ul>
+                    </div>
+                    <div className="text-right text-xs text-slate-400 italic ml-4">
+                      Sabine Schindler<br/>Project Manager
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        ReactDOM.render(
+          React.createElement(DependencyNetwork),
+          document.getElementById('root')
+        );
+    </script>
+</body>
+</html>
