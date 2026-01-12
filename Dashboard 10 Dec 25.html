@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROBabLE Futures - Project Dashboard</title>
+    <style>
+        @media print {
+            @page { size: landscape; }
+            body { margin: 0; padding: 8mm; }
+            .no-print { display: none; }
+            .dashboard { box-shadow: none; padding: 0; }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 15px;
+            background: #f5f5f5;
+        }
+        
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            border-bottom: 3px solid #1e40af;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+        }
+        
+        .header h1 {
+            margin: 0 0 5px 0;
+            color: #1e40af;
+            font-size: 26px;
+        }
+        
+        .header .meta {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 11px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .nav-button {
+            background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%);
+            color: #1f2937;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            text-align: center;
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+        }
+        
+        .project-health {
+            background: white;
+            border: 2px solid #e5e7eb;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .health-priorities-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+        
+        .health-card, .priorities-card, .budget-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .health-card {
+            text-align: center;
+        }
+        
+        .priorities-card {
+            text-align: left;
+        }
+        
+        .budget-card {
+            text-align: center;
+        }
+        
+        .budget-chart {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 10px auto;
+        }
+        
+        .budget-info {
+            margin-top: 10px;
+            font-size: 10px;
+            color: #666;
+        }
+        
+        .budget-amount {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .card-title {
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .priority-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 11px;
+        }
+        
+        .priority-item:last-child {
+            border-bottom: none;
+        }
+        
+        .priority-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .priority-dot.urgent {
+            background: #db4437;
+            box-shadow: 0 0 8px rgba(219, 68, 55, 0.4);
+        }
+        
+        .priority-dot.soon {
+            background: #f4b400;
+        }
+        
+        .priority-dot.planned {
+            background: #4285f4;
+        }
+        
+        .priority-text {
+            flex: 1;
+            color: #333;
+        }
+        
+        .priority-date {
+            color: #666;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        
+        .health-title {
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .health-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #0f9d58 0%, #0a7e3e 100%);
+            padding: 12px 30px;
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .health-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+        
+        .health-text {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .health-reason {
+            margin-top: 8px;
+            font-size: 10px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-card.green {
+            background: linear-gradient(135deg, #0f9d58 0%, #0a7e3e 100%);
+        }
+        
+        .stat-card.amber {
+            background: linear-gradient(135deg, #f4b400 0%, #db8b00 100%);
+        }
+        
+        .stat-card.red {
+            background: linear-gradient(135deg, #db4437 0%, #c33d2e 100%);
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 3px 0;
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+        
+        .work-packages {
+            margin-bottom: 15px;
+        }
+        
+        .wp-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .wp-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 10px;
+            background: #fafafa;
+        }
+        
+        .wp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+        
+        .wp-title {
+            font-weight: bold;
+            font-size: 12px;
+            color: #333;
+            flex: 1;
+            margin-right: 5px;
+        }
+        
+        .wp-lead {
+            font-size: 9px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+        
+        .status-badge {
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        
+        .status-badge.green { background: #c8e6c9; color: #2e7d32; }
+        .status-badge.amber { background: #fff9c4; color: #f57f17; }
+        .status-badge.red { background: #ffcdd2; color: #c62828; }
+        
+        .progress-bar {
+            height: 5px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+        
+        .progress-fill.green { background: linear-gradient(90deg, #0f9d58 0%, #0a7e3e 100%); }
+        .progress-fill.amber { background: linear-gradient(90deg, #f4b400 0%, #db8b00 100%); }
+        
+        .deliverables {
+            font-size: 10px;
+            color: #555;
+            line-height: 1.3;
+        }
+        
+        .bottom-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .section-box {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 10px;
+            background: #fafafa;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            font-size: 11px;
+            color: #1e40af;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #1e40af;
+            padding-bottom: 4px;
+        }
+        
+        .milestone-item, .risk-item, .dependency-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #e8e8e8;
+            font-size: 10px;
+        }
+        
+        .milestone-item:last-child, .risk-item:last-child, .dependency-item:last-child {
+            border-bottom: none;
+        }
+        
+        .milestone-date, .risk-level {
+            font-weight: bold;
+            color: #666;
+            font-size: 9px;
+        }
+        
+        .risk-high { color: #c62828; }
+        .risk-medium { color: #f57f17; }
+        
+        .critical-path {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-size: 10px;
+            text-align: center;
+        }
+        
+        .critical-path-title {
+            font-weight: bold;
+            color: #155724;
+            margin-bottom: 4px;
+        }
+        
+        .feedback-box {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-size: 10px;
+        }
+        
+        .feedback-title {
+            font-weight: bold;
+            color: #1565c0;
+            margin-bottom: 6px;
+            font-size: 11px;
+        }
+        
+        .feedback-item {
+            padding: 3px 0;
+            padding-left: 12px;
+            position: relative;
+        }
+        
+        .feedback-item:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #2196f3;
+        }
+        
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .print-button:hover {
+            background: #1e3a8a;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>PROBabLE Futures: Project Dashboard</h1>
+            <div class="meta">
+                <span><strong>Value:</strong> £3.4M | <strong>Duration:</strong> April 2024 to March 2028 | <strong>Status:</strong> On Track | <strong>PM Changeover:</strong> 5 Jan 2026</span>
+                <span><strong>Last Updated:</strong> 10 December 2025 | <strong>PM Handover:</strong> Complete (4 Dec)</span>
+            </div>
+        </div>
+        
+        <div class="nav-buttons">
+            <a href="https://livenorthumbriaac.sharepoint.com/:x:/s/PROBabLEProbabilisticSystemsinLawEnforcement/IQCVnVJUqCs8SJUy0aIKiZtOAUDMzjlQnqQadtSa0YAFneM?e=TdnYg1" target="_blank" class="nav-button action">Action Log</a>
+            <a href="https://livenorthumbriaac.sharepoint.com/:x:/r/sites/PROBabLEProbabilisticSystemsinLawEnforcement/Shared%20Documents/General/Project%20Management/Project%20Management%20Documents/Issue%20log.xlsx?d=wad4a7738502f48e7b71ea231eeb3f264&csf=1&web=1&e=bw95Tr" target="_blank" class="nav-button issues">Issues Log</a>
+            <a href="https://livenorthumbriaac.sharepoint.com/:f:/s/PROBabLEProbabilisticSystemsinLawEnforcement/IgB_ZI-__bfZTaii0ekdp0AkAcbbSeKma82qOY8vn9VgtdI?e=bjMGhu" target="_blank" class="nav-button outputs">Outputs</a>
+            <a href="https://livenorthumbriaac.sharepoint.com/:w:/r/sites/PROBabLEProbabilisticSystemsinLawEnforcement/Shared%20Documents/General/Project%20Management/Project%20Management%20Documents/Risk%20Register.docx?d=w6b646415feda4da5b719de97bd0931a8&csf=1&web=1&e=qhVLcr" target="_blank" class="nav-button risk">Risk Register</a>
+        </div>
+        
+        <div class="health-priorities-container">
+            <div class="health-card">
+                <div class="card-title">Overall Project Health</div>
+                <div class="health-indicator">
+                    <div class="health-dot"></div>
+                    <div class="health-text">GREEN</div>
+                </div>
+                <div class="health-reason">All WPs on track, positive RAI UK review, WP3 workshop complete & WP2a London event complete (11 Dec), PM handover complete, RAi All Hands follow up meeting with CS leads/Co-Is needed by 17 Dec for cornerstones phase 2 strategic alignment, 2 issues requiring ongoing monitoring</div>
+            </div>
+            
+            <div class="priorities-card">
+                <div class="card-title">Next 30 Days Priorities</div>
+                <div class="priority-item">
+                    <div class="priority-dot urgent"></div>
+                    <div class="priority-text">Home Office FR Consultation Response (<a href="https://www.gov.uk/government/consultations/legal-framework-for-using-facial-recognition-in-law-enforcement" target="_blank" style="color: #db4437; text-decoration: underline;">consultation docs</a>)</div>
+                    <div class="priority-date">12 Feb 2026</div>
+                </div>
+                <div class="priority-item">
+                    <div class="priority-dot urgent"></div>
+                    <div class="priority-text">WP1 AI Tools Map Publication on Project Website</div>
+                    <div class="priority-date">ASAP</div>
+                </div>
+                <div class="priority-item">
+                    <div class="priority-dot soon"></div>
+                    <div class="priority-text">Environmental Issues in LE AI Use - Integrate into checklist (Gita, Kyri, Claire, Michael available)</div>
+                    <div class="priority-date">Q1 2026</div>
+                </div>
+                <div class="priority-item">
+                    <div class="priority-dot soon"></div>
+                    <div class="priority-text">WP3 LLM Workshop 'Under Investigation' - transcription (mid Jan), analysis (Jan), writing (Feb-May), submit to AI, Ethics, and Society conference</div>
+                    <div class="priority-date">May 2026</div>
+                </div>
+                <div class="priority-item">
+                    <div class="priority-dot soon"></div>
+                    <div class="priority-text">RAi All Hands meeting follow up: CS leads/Co-Is meeting (by 17 Dec) to decide about strategic alignment with cornerstones phase 2 → Technical project ideas submission</div>
+                    <div class="priority-date">8 Jan</div>
+                </div>
+                <div class="priority-item">
+                    <div class="priority-dot planned"></div>
+                    <div class="priority-text">Advisory Board Meeting - drafting agenda</div>
+                    <div class="priority-date">12 Jan</div>
+                </div>
+            </div>
+            
+            <div class="budget-card">
+                <div class="card-title">Budget Health</div>
+                <div style="font-size: 10px; color: #666; margin-bottom: 8px; font-style: italic;">Expenditure vs Forecast at Halfway Point</div>
+                <div class="budget-chart">
+                    <svg viewBox="0 0 160 160">
+                        <circle cx="80" cy="80" r="60" fill="none" stroke="#e5e7eb" stroke-width="20"/>
+                        <circle cx="80" cy="80" r="60" fill="none" stroke="#0f9d58" stroke-width="20"
+                                stroke-dasharray="287 377"
+                                stroke-dashoffset="94"
+                                transform="rotate(-90 80 80)"
+                                stroke-linecap="round"/>
+                        <text x="80" y="75" text-anchor="middle" font-size="28" font-weight="bold" fill="#0f9d58">47.9%</text>
+                        <text x="80" y="95" text-anchor="middle" font-size="12" fill="#666">Spent</text>
+                    </svg>
+                </div>
+                <div class="budget-info">
+                    <div class="budget-amount">£574K of £1.2M Forecast</div>
+                    <div style="margin-top: 5px; color: #0f9d58; font-weight: bold;">🟢 GREEN - On Track</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary-stats">
+            <div class="stat-card green">
+                <div class="stat-label">On Track</div>
+                <div class="stat-value">7</div>
+                <div class="stat-label">Work Packages</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">At Risk</div>
+                <div class="stat-value">0</div>
+                <div class="stat-label">Work Packages</div>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-label">Monitor</div>
+                <div class="stat-value">2</div>
+                <div class="stat-label">Issues</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Completion</div>
+                <div class="stat-value">50%</div>
+                <div class="stat-label">Overall Progress</div>
+            </div>
+        </div>
+        
+        <div class="work-packages">
+            <div class="wp-grid">
+                <div class="wp-card">
+                    <div class="wp-header">
+                        <div class="wp-title">WP1: Mapping the Ecosystem</div>
+                        <span class="status-badge green">On Track</span>
+                    </div>
+                    <div class="wp-lead">Lead: Michele/Kyri</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill green" style="width: 85%"></div>
+                    </div>
+                    <div class="deliverables">
+                        <strong>Complete:</strong> 58 AI tools mapped (<a href="https://norsc.github.io/ai-mapping/" target="_blank" style="color: #2563eb; text-decoration: underline;">view draft map</a>), ArXiv published<br>
+                        <strong>In Progress:</strong> Final interviews and analysis, map publication on project website
+                    </div>
+                </div>
+                
+                <div class="wp-card">
+                    <div class="wp-header">
+                        <div class="wp-title">WP2a: Governance & Technology</div>
+                        <span class="status-badge green">On Track</span>
+                    </div>
+                    <div class="wp-lead">Lead: Carole/Michele</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill green" style="width: 44%"></div>
+                    </div>
+                    <div class="deliverables">
+                        <strong>Complete:</strong> 4 policy briefs published, London event 'AI in Law Enforcement: Lessons from the Past, Priorities for the Future' (11 Dec)<br>
+                        <strong>In Progress:</strong> Event evaluation<br>
+                        <strong>Upcoming:</strong> Home Office FR consultation response (12 Feb), Krakow conference preparation
+                    </div>
+                </div>
+                
+                <div class="wp-card">
+                    <div class="wp-header">
+                        <div class="wp-title">WP2b: Stories & Lived Experience</div>
+                        <span class="status-badge green">On Track</span>
+                    </div>
+                    <div class="wp-lead">Lead: Gita/Marion</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill green" style="width: 52%"></div>
+                    </div>
+                    <div class="deliverables">
+                        <strong>Complete:</strong> Stop the Traffic report published & sent to Nick<br>
+                        <strong>In Progress:</strong> Amend ethics application (Kyle)<br>
+                        <strong>Upcoming:</strong> Women (Jennifer), Disability (Michael) studies<br>
+                        <strong>Note:</strong> Race study (Katherine) - RF may be on phased return, tbd
+                    </div>
+                </div>
+                
+                <div class="wp-card">
+                    <div class="wp-header">
+                        <div class="wp-title">WP3: AI of the Future (LLMs)</div>
+                        <span class="status-badge green">On Track</span>
+                    </div>
+                    <div class="wp-lead">Lead: Muffy/Lizzie</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill green" style="width: 38%"></div>
+                    </div>
+                    <div class="deliverables">
+                        <strong>Complete:</strong> LLM workshop 'Under Investigation' (25-26 Nov), paper submission (11 Dec)<br>
+                        <strong>In Progress:</strong> Workshop transcription (mid Jan), data analysis (Jan), paper writing (Feb-May), submission to AI, Ethics, and Society conference (May 2026)<br>
+                        <strong>Upcoming:</strong> Policy brief & report (end Feb 2026)
+                    </div>
+                </div>
+                
+                <div class="wp-card">
+                    <div class="wp-header">
+                        <div class="wp-title">WP4a: Experimental Oversight</div>
+                        <span class="status-badge green">On Track</span>
+                    </div>
+                    <div class="wp-lead">Lead: Claire/Marion</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill green" style="width: 45%"></div>
+                    </div>
+                    <div class="deliverables">
+                        <strong>In Progress:</strong> Recruitment of up to 15 committee members, securing speakers from tool developers to present at evaluation workshops<br>
+                        <strong>Active:</strong> LFR, British Transport Police (BTP) Copilot, West Midlands case study development (team writing initial case studies, speakers to feed into CS, present tools and answer technical questions)<br>
+                        <strong>Under Consideration:</strong> Hertfordshire AI Post-Call Analysis tool (NPCC in-house LLM tool) - David Jackson keen to present, being considered as 4th case study or alternative
+                    </div>
+                </div>
+                
+                <div class="wp-card">
+                    <div class="wp-header">
+                        <div class="wp-title">WP4b: Jury & Mock Trial</div>
+                        <span class="status-badge green">On Track</span>
+                    </div>
+                    <div class="wp-lead">Lead: Kyle/Lizzie</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill green" style="width: 23%"></div>
+                    </div>
+                    <div class="deliverables">
+                        <strong>Complete:</strong> Scoping review published<br>
+                        <strong>In Progress:</strong> Mock trial design and execution planning, RA recruitment process underway
+                    </div>
+                </div>
+                
+                <div class="wp-card">
+                    <div class="wp-header">
+                        <div class="wp-title">WP5: International Comparison</div>
+                        <span class="status-badge green">On Track</span>
+                    </div>
+                    <div class="wp-lead">Lead: Kyri/Adrian</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill green" style="width: 38%"></div>
+                    </div>
+                    <div class="deliverables">
+                        <strong>Active:</strong> Birmingham & UNSW partnerships ongoing<br>
+                        <strong>Upcoming:</strong> Krakow workshop Sep 2026
+                    </div>
+                </div>
+                
+                <div class="wp-card">
+                    <div class="wp-header">
+                        <div class="wp-title">WP6: Framework & Lexicon</div>
+                        <span class="status-badge green">On Track</span>
+                    </div>
+                    <div class="wp-lead">Lead: Marion/Michele/Claire</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill green" style="width: 30%"></div>
+                    </div>
+                    <div class="deliverables">
+                        <strong>Complete:</strong> Checklist published, evaluation research underway<br>
+                        <strong>In Progress:</strong> Integration of environmental issues in LE AI use (team: Gita, Kyri, Claire, Michael)<br>
+                        <strong>Issue:</strong> Low force response rates on repository
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feedback-box">
+            <div class="feedback-title">✅ RAI UK Review Feedback (18-19 Nov 2025, Manchester) - POSITIVE</div>
+            <div style="margin-bottom: 6px; font-style: italic;">Project received excellent feedback. Key strategic priorities:</div>
+            <div class="feedback-item">Demonstrate path to becoming global leaders in responsible AI</div>
+            <div class="feedback-item">Enhance collaboration across 3 keystone projects and wider RAI community</div>
+            <div class="feedback-item">Transform rich qualitative findings into demonstrators, prototypes & practical tools</div>
+            <div class="feedback-item">Strengthen media engagement to communicate impact to broader audiences</div>
+            <div class="feedback-item">Share effective work practices with other RAI programme projects</div>
+            <div class="feedback-item">Explore linkages between Cornerstone phase 2 projects and keystones</div>
+            <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #90caf9; font-weight: bold;">
+                External reviewers note: Project has timely conversations with right stakeholders, potential to be world leader in responsible CJS AI
+            </div>
+        </div>
+        
+        <div class="bottom-section">
+            <div class="section-box">
+                <div class="section-title">Critical Milestones</div>
+                <div class="milestone-item" style="opacity: 0.6;">
+                    <span>✓ WP1 ArXiv Publication</span>
+                    <span class="milestone-date" style="color: #2e7d32;">Complete</span>
+                </div>
+                <div class="milestone-item" style="opacity: 0.6;">
+                    <span>✓ Manchester RAI UK Review</span>
+                    <span class="milestone-date" style="color: #2e7d32;">Complete</span>
+                </div>
+                <div class="milestone-item" style="opacity: 0.6;">
+                    <span>✓ WP3 LLM Workshop 'Under Investigation'</span>
+                    <span class="milestone-date" style="color: #2e7d32;">Complete</span>
+                </div>
+                <div class="milestone-item" style="opacity: 0.6;">
+                    <span>✓ PM Handover Final Meeting</span>
+                    <span class="milestone-date" style="color: #2e7d32;">Complete</span>
+                </div>
+                <div class="milestone-item" style="opacity: 0.6;">
+                    <span>✓ WP2a London Event: 'AI in Law Enforcement'</span>
+                    <span class="milestone-date" style="color: #2e7d32;">Complete</span>
+                </div>
+                <div class="milestone-item" style="opacity: 0.6;">
+                    <span>✓ WP3 LLM Paper Submission</span>
+                    <span class="milestone-date" style="color: #2e7d32;">Complete</span>
+                </div>
+                <div class="milestone-item">
+                    <span><strong>WP3 LLM Workshop Analysis & Paper</strong></span>
+                    <span class="milestone-date" style="color: #1e40af;">Jan-May 2026</span>
+                </div>
+                <div class="milestone-item">
+                    <span><strong>RAi All Hands Follow Up: CS Leads/Co-Is Meeting (Cornerstones Phase 2)</strong></span>
+                    <span class="milestone-date" style="color: #1e40af;">By 17 Dec 2025</span>
+                </div>
+                <div class="milestone-item">
+                    <span><strong>Cornerstone Phase 2: Technical Project Ideas Submission</strong></span>
+                    <span class="milestone-date" style="color: #1e40af;">8 Jan 2026</span>
+                </div>
+                <div class="milestone-item">
+                    <span><strong>Advisory Board Meeting</strong></span>
+                    <span class="milestone-date" style="color: #1e40af;">12 Jan 2026</span>
+                </div>
+                <div class="milestone-item">
+                    <span><strong>Home Office FR Consultation Response</strong></span>
+                    <span class="milestone-date" style="color: #1e40af;">12 Feb 2026</span>
+                </div>
+                <div class="milestone-item">
+                    <span><strong>Internal Project Review (In-Person)</strong></span>
+                    <span class="milestone-date" style="color: #1e40af;">Q2 2026</span>
+                </div>
+                <div class="milestone-item">
+                    <span>WP2b Lived Experience Studies</span>
+                    <span class="milestone-date">Mar-Apr 2026</span>
+                </div>
+            </div>
+            
+            <div class="section-box">
+                <div class="section-title">Key Risks & Issues</div>
+                <div class="risk-item">
+                    <span>WP6 low checklist response rates from forces</span>
+                    <span class="risk-level risk-high">HIGH</span>
+                </div>
+                <div class="risk-item">
+                    <span>WP6 Environmental issues in LE AI - awaiting team pickup (Oct discussion)</span>
+                    <span class="risk-level risk-medium">MEDIUM</span>
+                </div>
+                <div class="risk-item">
+                    <span>WP2b Race study timing - RF may be on phased return, tbd</span>
+                    <span class="risk-level risk-medium">MONITOR</span>
+                </div>
+                <div class="risk-item">
+                    <span>Note: if involving Judiciary, approval process is approx 12 months</span>
+                    <span class="risk-level risk-medium">MEDIUM</span>
+                </div>
+                <div class="risk-item">
+                    <span>Implementing RAI UK feedback on global leadership positioning</span>
+                    <span class="risk-level risk-medium">MEDIUM</span>
+                </div>
+            </div>
+            
+            <div class="section-box">
+                <div class="section-title">WP7: Dissemination Highlights</div>
+                <div class="deliverables">
+                    <strong>✓ Complete:</strong> Checklist published, Stop the Traffic report (sent to Nick), WP3 LLM Workshop (25-26 Nov), WP2a London Event (11 Dec), WP3 LLM paper submission (11 Dec)<br>
+                    <strong>→ In Progress:</strong> WP2a event evaluation, WP3 workshop analysis & paper (Jan-May 2026), Home Office FR consultation response (12 Feb)<br>
+                    <strong>→ Upcoming:</strong> Krakow Conference (Sep 2026), WP2b outputs (Mar-Apr 2026), Environmental issues integration into checklist<br>
+                    <strong>→ Strategic Focus:</strong> Media engagement, demonstrator/prototype development, collaboration across keystones, RAi All Hands follow up: CS leads/Co-Is meeting by 17 Dec for cornerstones phase 2 strategic alignment, ideas submission 8 Jan<br>
+                    <strong>→ Active:</strong> Continuous publication of research outputs, REF2029 impact case study preparation
+                </div>
+            </div>
+            
+            <div class="section-box">
+                <div class="section-title">Critical Dependencies</div>
+                <div class="dependency-item">
+                    <span><strong>WP1-5 → WP6:</strong> All feed into framework synthesis</span>
+                </div>
+                <div class="dependency-item">
+                    <span><strong>WP2b → WP4:</strong> Lived experience feeds case materials</span>
+                </div>
+                <div class="dependency-item">
+                    <span><strong>WP6 → WP7:</strong> Framework enables dissemination</span>
+                </div>
+                <div class="dependency-item">
+                    <span><strong>WP4a/4b → WP6:</strong> Oversight/trial insights for framework</span>
+                </div>
+                <div class="dependency-item">
+                    <span><strong>RAI feedback → All WPs:</strong> Global leadership positioning</span>
+                </div>
+                <div class="dependency-item">
+                    <span><strong>Home Office FR consultation → WP2a/WP4a:</strong> Direct relevance to governance & oversight workstreams</span>
+                </div>
+                <div class="dependency-item">
+                    <span><strong>RAi All Hands Follow Up:</strong> CS leads/Co-Is meeting (by 17 Dec) on cornerstones phase 2 → Ideas submission (8 Jan)</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="critical-path">
+            <div class="critical-path-title">✅ CRITICAL PATH UPDATE - ALL ON TRACK</div>
+            <span style="opacity: 0.6;">WP1 interim report → ArXiv publication (Complete) → WP3 LLM workshop (Complete) → WP3 LLM paper (Complete) → </span><strong>WP3 workshop analysis (Jan-May 2026)</strong> → WP6 framework synthesis → WP7 final dissemination (Mar 2028)
+            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #28a745;">
+                <strong>📋 Home Office FR Consultation:</strong> Multi-disciplinary response due 12 Feb 2026. Includes 2 new NPL evaluations of retrospective and operator-initiated FR tools.<br>
+                <strong>📋 Internal Project Review (Q2 2026):</strong> In-person meeting to review project scope with enhanced technical focus per RAI UK feedback<br>
+                <strong>📋 PM Transition:</strong> Complete (4 Dec)<br>
+                <strong>🔬 RAi All Hands Follow Up - Cornerstone Phase 2:</strong> CS leads/Co-Is (Michele, Adrian, Kyle, Yifeng, Muffy) meet with Marion & Natalie by 17 Dec to decide strategic alignment with cornerstones phase 2. Submission by 8 Jan. Focus: AI system chaining, deepfakes in evidence, agentic AI, technical prototypes
+            </div>
+        </div>
+    </div>
+</body>
+</html>
